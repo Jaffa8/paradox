@@ -18,4 +18,4 @@ const levelSchema=new mongoose.Schema({
     } 
 },{timestamps:true});
 
-module.exports("Level",levelSchema)
+module.exports=("Level",levelSchema);
