@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const verify = require("./middleware/authMiddleware.js");
 const homeController = require("./controllers/homePage.controller.js");
 
+const authRoutes=require("./routes/auth.routes.js");
+
 const app = express();
 
 
@@ -28,7 +30,7 @@ app.post("/home", function (req, res) {
 
 
 
-const authenticate = [hashVerifier.base64Decoder, hashVerifier.sha3HashVerifier];
+const authenticate = [verify.base64Decoder, verify.sha3HashVerifier];
 
 
 app.use("/auth", authenticate, authRoutes)
