@@ -9,6 +9,8 @@ const authRoutes=require("./routes/auth.routes.js");
 const app = express();
 
 
+moongoose.connect("mongodb+srv://Sachit:08052004859@cluster0.3fw3vyt.mongodb.net/paradox");
+
 app.use(bodyParser.json());
 
 
