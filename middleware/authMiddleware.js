@@ -28,4 +28,4 @@ catch(error){
 };
 
 
-module.exports = verifyJWT;
+module.exports = {verifyJWT};
