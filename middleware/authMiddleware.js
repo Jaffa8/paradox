@@ -19,7 +19,8 @@ try{
     if(!user){
         throw new Error(401,"Invalid Access Token")
     }
-    req.user=usernext()
+    req.user=user;
+    next()
 }
 catch(error){
     throw new Error({message:"Invalid access Token"})
