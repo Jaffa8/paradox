@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+require ('dotenv').config();
+
 const mongoose=require("mongoose");
 
 const verify = require("./middleware/authMiddleware.js");
@@ -11,7 +13,17 @@ const authRoutes=require("./routes/auth.routes.js");
 const app = express();
 
 
-mongoose.connect("mongodb+srv://Sachit:08052004859@cluster0.3fw3vyt.mongodb.net/paradox");
+const port=3000;
+
+const start = async ()=> {
+    try{
+        await connectDB(process.env.MONGO_URI) 
+         app.listen(port,console.log("Running"))
+    } catch (error){
+       console.log("NOt working");
+    }
+}
+
 
 app.use(bodyParser.json());
 
@@ -40,4 +52,4 @@ const authenticate = [verify.base64Decoder, verify.sha3HashVerifier];
 app.use("/auth", authenticate, authRoutes)
 
 
-app.listen(3000);
+app.listen(port);
