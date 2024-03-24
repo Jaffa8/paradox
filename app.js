@@ -15,17 +15,17 @@ app.use(cors({
 
 
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
 
 
 //routes import
-const authRouter = '../routes/auth.routes.js'
-const  hintRouter = "../routes/hint.routes.js"
-const  homePageRouter = "./routes/homePage.routes.js"
-const leaderboardRouter = "./routes/leaderboard.routes.js"
-const play_level1Router = "./routes/play_level1.routes.js"
-const profileRouter = "./routes/profile.routes.js"
+const authRouter = require("../routes/auth.routes.js");
+const hintRouter = require('../routes/hint.routes.js');
+const homePageRouter = require('../routes/homePage.routes.js');
+const leaderboardRouter = require('../routes/leaderboard.routes.js');
+const play_level1Router = require('../routes/play_level1.routes.js');
+const profileRouter = require('../routes/profile.routes.js');
 
 
 //routes declaration
