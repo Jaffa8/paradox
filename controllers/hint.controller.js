@@ -1,5 +1,5 @@
-const QuestionModel = require("../models/question.model");
-const UserModel = require("../models/paradoxUser.model");
+const QuestionModel = require("../models/question.model.js");
+const UserModel = require("../models/paradoxUser.model.js");
 
 const unlockHint = async (req, res) => {
   try {

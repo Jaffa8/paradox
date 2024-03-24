@@ -1,6 +1,6 @@
-const Level = require("../models/level.model");
-const Banner = require("../models/banner.model");
-const ParadoxUser = require("../models/paradoxUser.model");
+const Level = require("../models/level.model.js");
+const Banner = require("../models/banner.model.js");
+const ParadoxUser = require("../models/paradoxUser.model.js");
 
 const levels = [
   {

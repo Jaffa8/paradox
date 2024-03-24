@@ -2,8 +2,8 @@ const { Router } = require("express");
 const {
   checkQuestion,
   checkAnswer,
-} = require("../controllers/play_level1.controller");
-const { unlockHint } = require("../controllers/hint.controller");
+} = require("../controllers/play_level1.controller.js");
+const { unlockHint } = require("../controllers/hint.controller.js");
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-const ParadoxUser=require("../models/paradoxUser.model");
+const ParadoxUser=require("../models/paradoxUser.model.js");
 
 const displayProfile= async(req,res)=>{
   try{

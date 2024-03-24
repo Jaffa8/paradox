@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { unlockHint } = require("../controllers/leaderboard.controller");
+const { unlockHint } = require("../controllers/leaderboard.controller.js");
 
 const router = Router();
 

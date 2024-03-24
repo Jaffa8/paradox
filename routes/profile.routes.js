@@ -1,6 +1,6 @@
 const {Router}=require("express");
 
-const{displayProfile}=require("../controllers/profile.controller");
+const{displayProfile}=require("../controllers/profile.controller.js");
 
 
 const router=Router();

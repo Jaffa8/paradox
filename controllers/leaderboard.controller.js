@@ -1,5 +1,5 @@
-const ParadoxUser = require("../models/paradoxUser.model");
-const TeamModel = require("../models/team.model");
+const ParadoxUser = require("../models/paradoxUser.model.js");
+const TeamModel = require("../models/team.model.js");
 
 const displayLeaderBoard = async (req, res) => {
   try {

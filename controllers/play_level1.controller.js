@@ -1,5 +1,5 @@
-const ParadoxUser = require("../models/paradoxUser.model");
-const Question = require("../models/question.model");
+const ParadoxUser = require("../models/paradoxUser.model.js");
+const Question = require("../models/question.model.js");
 
 
 const level1StartsAt = 1681533000000;

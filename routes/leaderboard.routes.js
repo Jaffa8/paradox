@@ -2,7 +2,7 @@ const { Router } = require("express");
 const {
   displayLeaderBoard,
   displayLevel2LeaderBoard,
-} = require("../controllers/leaderboard.controller");
+} = require("../controllers/leaderboard.controller.js");
 
 const router = Router();
 
