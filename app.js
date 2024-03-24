@@ -20,12 +20,12 @@ app.use(cookieParser())
 
 
 //routes import
-const authRouter = require("../routes/auth.routes.js");
-const hintRouter = require('../routes/hint.routes.js');
-const homePageRouter = require('../routes/homePage.routes.js');
-const leaderboardRouter = require('../routes/leaderboard.routes.js');
-const play_level1Router = require('../routes/play_level1.routes.js');
-const profileRouter = require('../routes/profile.routes.js');
+const authRouter = require("./routes/auth.routes.js");
+const hintRouter = require('./routes/hint.routes.js');
+const homePageRouter = require('./routes/homePage.routes.js');
+const leaderboardRouter = require('./routes/leaderboard.routes.js');
+const play_level1Router = require('./routes/play_level1.routes.js');
+const profileRouter = require('./routes/profile.routes.js');
 
 
 //routes declaration
