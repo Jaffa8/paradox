@@ -23,7 +23,7 @@ try{
     next()
 }
 catch(error){
-    throw new Error({message:"Invalid access Token"})
+    return res.status(500).json({  message: "ERROR!!" });
 }
 };
 

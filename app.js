@@ -29,12 +29,12 @@ app.use(bodyParser.json());
 
 
 app.post("/home", function (req, res) {
-    verify.base64Decoder(req, res, function(err) {
+    verify.verifyJWT(req, res, function(err) {
         if (err) {
-            return res.status(500).send("Error decoding Base64 data");
+            return res.status(500).send("Error!!");
         }
         
-        verify.sha3HashVerifier(req, res, function(err) {
+        verify.verifyJWT(req, res, function(err) {
             if (err) {
                 return res.status(500).send("Error verifying");
             }
@@ -46,7 +46,7 @@ app.post("/home", function (req, res) {
 
 
 
-const authenticate = [verify.base64Decoder, verify.sha3HashVerifier];
+const authenticate = [verify.verifyJWT];
 
 
 app.use("/auth", authenticate, authRoutes)
