@@ -19,6 +19,10 @@ password:{
   min:[6,"Min 6 characters"],
 }
 },{timestamps:true})
+
+userSchema.methods.isPasswordCorrect = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 module.exports=mongoose.model('User',userSchema);
 
 

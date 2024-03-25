@@ -51,43 +51,45 @@ const signup_post=async(req,res)=>{
 };
 
 
-const login_post= async (req,res)=>{
-    
-        const{email,password}=req.body;
-       const user= await User.findOne({
-        $or: [{email},{password}]
-       })
-       if(!user){
-        throw new Error(404,"User doesn't exist");
-       }
-       const isPasswordValid= await user.isPasswordCorrect(password);
+const login_post = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
-       if(!isPasswordValid){
-        throw new Error(401,"Invalid user Credentials");
-       }
-     const {accessToken,refreshToken}=await generateAccessAndRefreshTokens(user._id);
+        if (!user) {
+            throw new Error(404, "User doesn't exist");
+        }
 
-     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
-     const options={
-        httpOnly:true,
-        secure:true,
-     }
+        const isPasswordValid = await user.isPasswordCorrect(password);
 
-     return res
-     .status(200)
-     .cookie("accessToken",accessToken,options)
-     .cookie("refreshToken",refreshToken,options)
-     .json(
-        new ApiResponse(
-        200,
-        {
-            user:loggedInUser,accessToken,refreshToken
-        },
-        "User logged In Succesfully"
-     )
-     )
+        if (!isPasswordValid) {
+            throw new Error(401, "Invalid user Credentials");
+        }
 
-    };
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({
+                user: loggedInUser,
+                accessToken,
+                refreshToken,
+                message: "User logged In Succesfully"
+            });
+    } catch (error) {
+        // Catch any unexpected errors and handle them appropriately
+        console.error("Error in login_post:", error);
+        return res.status(error.statusCode || 500).json({ message: error.message });
+    }
+};
     
 
 
