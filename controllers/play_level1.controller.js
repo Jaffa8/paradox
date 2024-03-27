@@ -3,9 +3,9 @@ const Question = require("../models/question.model.js");
 
 
 const level1StartsAt = 1681533000000;
-const level2StartsAt = 1681626600000;
+
 const level1EndsAt = 1681583400000;
-const level2EndsAt = 1681655400000;
+
 
 
 const checkQuestion = async (req, res) => {
@@ -14,7 +14,7 @@ const checkQuestion = async (req, res) => {
 
   
     if (currTime < level1StartsAt || currTime > level1EndsAt) {
-      return res.status(200).json({ success: false, message: "Level has ended" });
+      return res.status(200).json({ success: false, message: "Level 1 not active anymore!!" });
     }
 
     const { uid } = req.body;
