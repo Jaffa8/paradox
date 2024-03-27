@@ -6,7 +6,7 @@ const {
 
 const router = Router();
 
-router.post("/", displayLeaderBoard);
+router.post("/lead", displayLeaderBoard);
 router.post("/level2", displayLevel2LeaderBoard);
 
 module.exports = router;

@@ -2,52 +2,45 @@ const User=require("../models/user.model.js");
 
 const jwt=require("jsonwebtoken");
 
+const bcrypt=require("bcrypt");
 
 
-const generateAccessAndRefreshTokens = async(userId)=>{
-    try{
-        const user= await User.findById(userId);
-        const accessToken= user.generateAccessToken();
-        const refreshToken= user.generateRefreshToken();
-        user.refreshToken=refreshToken
-        await user.save({ validateBeforeSave: false });
-        return {accessToken, refreshToken}
+    
 
+const signup_post = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
+        if (!password) {
+            throw new Error("Password is required");
+        }
+        if (password.length < 6) {
+            throw new Error("Password must be at least 6 characters long");
+        }
+
+       
+       
+        const existedUser = await User.findOne({ email });
+
+        if (existedUser) {
+            throw new Error(409, "User with same email already exists");
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({ email, password: hashedPassword });
+
+        if (!user) {
+            throw new Error(500, "Something went wrong while registering the user");
+        }
+
+        // Generate JWT token for the newly created user
+        const token = jwt.sign({ userId: user._id }, "process.env.JWT_SECRET", { expiresIn: "1h" });
+        console.log("JWT Token:", token);
+        return res.status(201).json({ message: "User registered successfully", token });
+       
     } catch (error) {
-        throw new Error(500, "Something went wrong")
+        console.error("Error in signup_post:", error);
+        return res.status(error.statusCode || 500).json({ message: error.message });
     }
-}
-    
-
-const signup_post=async(req,res)=>{
-    
-        const{email,password}=req.body;
-    
-    if(!password){
-     throw new Error("Password is required");
-    } 
-   const existedUser=await User.findOne({
-    $or: [{email}]
-   })
-   if(existedUser){
-    throw new Error(409,"User with same email already exists")
-   }
-   const user=await User.create({
-    email,
-    password,
-   })
-   const createdUser= await User.findById(user._id).select(
-    "-password -refreshToken"
-   )
-   if(!createdUser){
-    throw new Error(500,"Something went wrong while registering the user")
-   }
-
-   return res.status(201).json(
-    res.status(208).json({message:"User registered successfully"})
-   )
-
 };
 
 
@@ -57,40 +50,28 @@ const login_post = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            throw new Error(404, "User doesn't exist");
+            const error = new Error("User doesn't exist");
+            error.status = 404;
+            throw error;
         }
 
-        const isPasswordValid = await user.isPasswordCorrect(password);
+        const valid = await bcrypt.compare(password, user.password);
 
-        if (!isPasswordValid) {
-            throw new Error(401, "Invalid user Credentials");
+        if (!valid) {
+            const error = new Error("Invalid user credentials");
+            error.status = 401;
+            throw error;
         }
 
-        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
-        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
-
-        const options = {
-            httpOnly: true,
-            secure: true,
-        };
-
-        return res
-            .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
-            .json({
-                user: loggedInUser,
-                accessToken,
-                refreshToken,
-                message: "User logged In Succesfully"
-            });
+        // Successful login
+        return res.status(200).json({ message: "User logged in successfully", user });
     } catch (error) {
-        // Catch any unexpected errors and handle them appropriately
         console.error("Error in login_post:", error);
-        return res.status(error.statusCode || 500).json({ message: error.message });
+        return res.status(error.status || 500).json({ message: error.message });
     }
 };
-    
+
+
 
 
 module.exports={signup_post,login_post};

@@ -18,7 +18,7 @@ const levels = [
 const homePage = async (req, res) => {
   const { uid } = req.body;
   const currTime = Date.now();
-  const player = await ParadoxUser.findOne({ uid: uid });
+  const player = await ParadoxUser.findOne({ uid:uid });
   const leaderboard = await ParadoxUser.find().sort({ score: -1 }).limit(3).exec();
   const bannerList = await Banner.find();
 
@@ -36,6 +36,7 @@ const homePage = async (req, res) => {
       success: true,
       message: "No active level currently.",
       data: {
+        
         playerName: player.name,
         isSolo: !player.isInTeam,
         teamName: player.teamName,
