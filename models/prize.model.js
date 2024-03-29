@@ -15,4 +15,4 @@ const prizeSchema=new mongoose.Schema({
         }
     },{timestamps:true});
 
-module.exports("Prize",prizeSchema);
+module.exports=mongoose.model("Prize",prizeSchema);

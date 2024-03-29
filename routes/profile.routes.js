@@ -5,7 +5,7 @@ const{displayProfile}=require("../controllers/profile.controller.js");
 
 const router=Router();
 
-router.post("/",function (req,res,next){
+router.post("/display",function (req,res,next){
     try{
         displayProfile(req,res);
     }
