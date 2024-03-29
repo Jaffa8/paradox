@@ -1,33 +1,40 @@
-const ParadoxUser = require("../models/paradoxUser.model.js");
-const Question = require("../models/question.model.js");
+const ParadoxUserModel = require("../models/paradoxUser.model.js");
+const QuestionModel = require("../models/question.model.js");
 
+const levels = {
+  level1: {
+    start: 1681533000000,
+    end: 1681583400000
+  },
+  
+};
 
-const level1StartsAt = 1681533000000;
-
-const level1EndsAt = 1681583400000;
-
-
+const getLevelForTime = (currTime) => {
+  for (const level in levels) {
+    if (currTime >= levels[level].start && currTime <= levels[level].end) {
+      return level;
+    }
+  }
+  return null;
+};
 
 const checkQuestion = async (req, res) => {
   try {
     const currTime = Date.now();
+    const currentLevel = getLevelForTime(currTime);
 
-  
-    if (currTime < level1StartsAt || currTime > level1EndsAt) {
-      return res.status(200).json({ success: false, message: "Level 1 not active anymore!!" });
+    if (!currentLevel) {
+      return res.status(200).json({ success: false, message: "No active level" });
     }
 
     const { uid } = req.body;
-
- 
-    const user = await ParadoxUser.findOne({ uid });
+    const user = await ParadoxUserModel.findOne({ uid });
 
     if (!user) {
       return res.status(200).json({ success: false, message: "User does not exist" });
     }
 
-   
-    const ques = await Question.findOne({ id: user.currQues });
+    const ques = await QuestionModel.findOne({ id: user.currQues });
 
     if (!ques) {
       return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
@@ -45,7 +52,6 @@ const checkQuestion = async (req, res) => {
       }
     };
 
-  
     if (user.unlockedHints.includes(user.currQues)) {
       responseData.nextQuestion.hint = ques.hint;
     }
@@ -55,58 +61,68 @@ const checkQuestion = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-
-
 const checkAnswer = async (req, res) => {
   try {
     const currTime = Date.now();
+    const currentLevel = getLevelForTime(currTime);
 
-  
-    if (currTime < level1StartsAt || currTime > level1EndsAt) {
-      return res.status(200).json({ success: false, message: "Level has ended" });
+    if (!currentLevel) {
+      return res.status(200).json({ success: false, message: "No active level" });
     }
 
     const { answer, uid } = req.body;
-
-    const user = await ParadoxUser.findOne({ uid });
+    const user = await ParadoxUserModel.findOne({ uid });
 
     if (!user) {
       return res.status(200).json({ success: false, message: "User does not exist" });
     }
 
-  
-    const ques = await Question.findOne({ id: user.currQues });
+    const ques = await QuestionModel.findOne({ id: user.currQues });
 
     if (!ques) {
       return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
     }
 
-   
     const isAnswerCorrect = ques.answer.toLowerCase().replace(" ", "") === answer.toLowerCase();
+    let scoreToAdd = 0;
 
     if (isAnswerCorrect) {
-      let scoreToAdd = 20;
       
+      scoreToAdd += 20;
+
      
-      if (ques.count < 5) {
-        scoreToAdd += 10;
+      const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true }) 
+        .sort({ lastAnswerTimestamp: 1 })
+        .limit(5);
+
+      if (firstFiveCorrect.some(u => u.uid === uid)) {
+        scoreToAdd += 5;                    // first 5 will get 5 more points per question
       }
-      
-      if (ques.count === 0) {
-        scoreToAdd += 5;
+
+     
+      if (user.lastAnswerCorrect) {
+        user.consecutiveCorrectAnswers++;
+        scoreToAdd += user.consecutiveCorrectAnswers * 5; // for every consecutive right answer 5 more points
+      } else {
+        user.consecutiveCorrectAnswers = 1;   // else streak =1
       }
+
       
       user.score += scoreToAdd;
-      user.currQues++;
+      user.lastAnswerCorrect = true; 
       await user.save();
+
       
       ques.count++;
       await ques.save();
+    } else {
+      
+      user.lastAnswerCorrect = false;
+      user.consecutiveCorrectAnswers = 0;
+      await user.save();
     }
-    
 
-   
-    const nextQues = await Question.findOne({ id: user.currQues });
+    const nextQues = await QuestionModel.findOne({ id: user.currQues });
 
     const responseData = {
       isAnswerCorrect,
@@ -126,4 +142,25 @@ const checkAnswer = async (req, res) => {
   }
 };
 
-module.exports = { checkQuestion, checkAnswer };
+
+const unlockHint = async (req, res) => {
+  try {
+    const { uid } = req.body;
+    const user = await ParadoxUserModel.findOne({ uid });
+
+    if (!user) {
+      return res.status(200).json({ success: false, message: "User does not exist" });
+    }
+
+    if (user.score >= 40) {   // hint will happen only when we have score more than 40
+     
+      user.unlockedHints.push(user.currQues);
+      await user.save();
+
+    return res.status(200).json({ success: true, message: "Hint unlocked successfully" });
+  }} catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+module.exports = { checkQuestion, checkAnswer, unlockHint };
