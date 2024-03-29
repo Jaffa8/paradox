@@ -27,7 +27,7 @@ const leaderboardRouter = require('./routes/leaderboard.routes.js');
 const play_level1Router = require('./routes/play_level1.routes.js');
 const profileRouter = require('./routes/profile.routes.js');
 const prize_router=require("./routes/prizes.routes.js");
-
+const team_router=require(".//routes/team.routes.js");
 
 //routes declaration
 
@@ -38,7 +38,7 @@ app.use("/api/v1/leaderboard", leaderboardRouter)
 app.use("/api/v1/level1", play_level1Router)
 app.use("/api/v1/profile", profileRouter)
 app.use("/api/v1/prize",prize_router);
-
+app.use("/api/v1/team",team_router);
 
 
 module.exports=app;
