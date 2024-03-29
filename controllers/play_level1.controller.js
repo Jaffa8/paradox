@@ -88,15 +88,21 @@ const checkAnswer = async (req, res) => {
 
     if (isAnswerCorrect) {
       
-      scoreToAdd += 20;
+      scoreToAdd += 10;
 
+      const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
+        .sort({ lastAnswerTimestamp: 1 });
+
+      if (firstSolver && firstSolver.uid === uid) {
+        scoreToAdd += 5;       // first solver will get 5 extra points
+      }
      
       const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true }) 
         .sort({ lastAnswerTimestamp: 1 })
         .limit(5);
 
       if (firstFiveCorrect.some(u => u.uid === uid)) {
-        scoreToAdd += 5;                    // first 5 will get 5 more points per question
+        scoreToAdd += 5;                    // first 5 solver will get 5 more points per question
       }
 
      
@@ -143,24 +149,5 @@ const checkAnswer = async (req, res) => {
 };
 
 
-const unlockHint = async (req, res) => {
-  try {
-    const { uid } = req.body;
-    const user = await ParadoxUserModel.findOne({ uid });
 
-    if (!user) {
-      return res.status(200).json({ success: false, message: "User does not exist" });
-    }
-
-    if (user.score >= 40) {   // hint will happen only when we have score more than 40
-     
-      user.unlockedHints.push(user.currQues);
-      await user.save();
-
-    return res.status(200).json({ success: true, message: "Hint unlocked successfully" });
-  }} catch (error) {
-    return res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-
-module.exports = { checkQuestion, checkAnswer, unlockHint };
+module.exports = { checkQuestion, checkAnswer };
