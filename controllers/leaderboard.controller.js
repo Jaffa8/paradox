@@ -32,6 +32,8 @@ const displayLeaderBoard = async (req, res) => {
   }
 };
 
+
+
 const displayLevel2LeaderBoard = async (req, res) => {
   try {
     const { uid } = req.body;

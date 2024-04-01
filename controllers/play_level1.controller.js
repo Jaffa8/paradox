@@ -102,7 +102,7 @@ const checkAnswer = async (req, res) => {
         .limit(5);
 
       if (firstFiveCorrect.some(u => u.uid === uid)) {
-        scoreToAdd += 5;                    // first 5 solver will get 5 more points per question
+        scoreToAdd += 2;                    // first 5 solver will get 5 more points per question
       }
 
      
