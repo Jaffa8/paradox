@@ -1,4 +1,5 @@
-const ParadoxUser = require("../models/paradoxUser.model.js");
+
+const ParadoxUser = require("../models/paradoxUser.model");
 
 const createUser = async (req, res) => {
   try {
@@ -13,35 +14,33 @@ const createUser = async (req, res) => {
       displayPicture,
     } = req.body;
 
-   
-    let existingUser = await ParadoxUser.findOne({ uid });
+    
+    const existingUser = await ParadoxUser.findOne({ uid });
 
-    if (existingUser) {
-      return res.status(200).json({ message: "User already exists", success: false });
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found", success: false });
     }
 
- 
-    const newUser = new ParadoxUser({
-      uid,
-      name,
-      email,
-      roll,
-      refCode,
-      isInTeam: false,
-      teamCode,
-      teamName,
-      currQues: 1,
-      image: displayPicture,
-      score: 0,
-      level: 1,
-    });
+   
+    const userProfile = {
+     
+      name: name,
+      email: email,
+      roll: roll,
+      refCode: refCode,
+      teamCode: teamCode,
+      teamName: teamName,
+      displayPicture: displayPicture,
+    };
 
    
-    await newUser.save();
+    existingUser.profile = userProfile;
+    await existingUser.save();
 
-    return res.status(200).json({ message: "User created successfully", success: true });
+    return res.status(200).json({ message: "User profile created successfully", success: true });
   } catch (error) {
-    return res.status(500).json({ message: "Unable to create user", success: false });
+    console.error("Error creating user profile:", error);
+    return res.status(500).json({ message: "Unable to create user profile", success: false });
   }
 };
 
