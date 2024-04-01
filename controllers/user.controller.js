@@ -8,9 +8,7 @@ const createUser = async (req, res) => {
       name,
       email,
       roll,
-      refCode,
-      teamCode,
-      teamName,
+     
       displayPicture,
     } = req.body;
 
