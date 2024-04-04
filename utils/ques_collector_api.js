@@ -5,33 +5,29 @@ const Question = require("../models/question.model");
 const router = Router();
 
 
-const renderQuestionForm = (req, res) => {
+router.get("/form", (req, res) => {
   res.render("questions"); 
-};
-
-
-router.get("/form", renderQuestionForm);
+});
 
 
 const submitQuestion = async (req, res, model) => {
   try {
-    const { id, question, image, answer, hint, isHintAvailable, isAnswerRequired } = req.body;
+    const { questionNo, question, image, answer } = req.body;
 
-    console.log(id, question, image, answer);
+    console.log(questionNo, question, image, answer);
 
     const newQues = new model({
       question: question,
-      id: id,
+      id: questionNo,
       image: image,
       answer: answer,
-      hint: hint,
-      isHintAvailable: isHintAvailable,
-      isAnswerRequired: isAnswerRequired,
     });
 
     await newQues.save();
 
-    return res.status(200).json({ message: "submitted" });
+    return res.status(200).json({
+      message: "submitted",
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -41,6 +37,7 @@ const submitQuestion = async (req, res, model) => {
 router.post("/submit", async (req, res) => {
   await submitQuestion(req, res, Question);
 });
+
 
 
 
