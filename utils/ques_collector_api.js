@@ -33,12 +33,8 @@ const submitQuestion = async (req, res, model) => {
   }
 };
 
-
 router.post("/submit", async (req, res) => {
   await submitQuestion(req, res, Question);
 });
-
-
-
 
 module.exports = router;
