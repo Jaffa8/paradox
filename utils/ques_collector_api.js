@@ -1,14 +1,18 @@
 const { Router } = require("express");
 const Question = require("../models/question.model");
 
-
 const router = Router();
 
-
-router.get("/form", (req, res) => {
-  res.render("questions"); 
+router.get("/form", async (req, res) => {
+  try {
+    const questions = await Question.find({});
+    console.log(questions);
+    res.send(questions);
+  } catch (error) {
+    console.log("Failed to fetch questions:", error);
+    res.status(500).send("Error fetching questions");
+  }
 });
-
 
 const submitQuestion = async (req, res, model) => {
   try {
