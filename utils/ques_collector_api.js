@@ -16,15 +16,16 @@ router.get("/form", async (req, res) => {
 
 const submitQuestion = async (req, res, model) => {
   try {
-    const { questionNo, question, image, answer } = req.body;
+    const { questionNo, question, image, answer,hint } = req.body;
 
-    console.log(questionNo, question, image, answer);
+    console.log(questionNo, question, image, answer,hint);
 
     const newQues = new model({
       question: question,
       id: questionNo,
       image: image,
       answer: answer,
+      hint: hint
     });
 
     await newQues.save();

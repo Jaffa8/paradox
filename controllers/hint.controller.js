@@ -3,22 +3,25 @@ const UserModel = require("../models/paradoxUser.model.js");
 
 const unlockHint = async (req, res) => {
   try {
-    const { uid } = req.body;
-
-    
+    const { uid, id } = req.body;
+    console.log("UID:", uid); // Print the value of uid
+    console.log("ID:", id);   // Print the value of id
+    // Find the user by UID`+-------------------------------------------------------------------------------------------------------------
+   
     const currUser = await UserModel.findOne({ uid });
     if (!currUser) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
-
    
-    const ques = await QuestionModel.findOne({ id: currUser.currQues });
+  
+    // Find the question by its ID
+    const ques = await QuestionModel.findOne({ id: id });
     if (!ques) {
       return res.status(404).json({ success: false, message: "Question not found" });
     }
 
-   
-    const hintUnlockCost = 30;     // 30 points deducted per hint
+    // Check if the user has enough points to unlock the hint
+    const hintUnlockCost = 30; // 30 points deducted per hint
     if (currUser.score < hintUnlockCost) {
       return res.status(200).json({
         success: false,
@@ -35,25 +38,23 @@ const unlockHint = async (req, res) => {
       });
     }
 
-    
+    // Check if the user is eligible to unlock the hint based on time spent
+    const timeSpentThreshold = 180; // hint unlock after 3 minutes only
     let hintUnlockEligible = false;
-
-   
-    
-
-    
-    const timeSpentThreshold = 180;             // hint unlock after 3 minutes only
     if (currUser.timeSpent[ques.id] && currUser.timeSpent[ques.id] > timeSpentThreshold) {
       hintUnlockEligible = true;
     }
 
+    // Handle hint unlocking
     if (hintUnlockEligible) {
-     
-      currUser.score -= hintUnlockCost;           // deducting the score
+      // Deduct the hint unlock cost from the user's score
+      currUser.score -= hintUnlockCost;
+      // Add the question ID to the list of unlocked hints for the user
       currUser.unlockedHints.push(ques.id);
+      // Save the updated user object
       await currUser.save();
 
-     
+      // Prepare response data
       const nextQuestion = {
         questionNo: ques.id,
         _id: ques._id,
@@ -63,12 +64,14 @@ const unlockHint = async (req, res) => {
         isHintAvailable: ques.isHintAvailable,
       };
 
+      // Send success response with unlocked hint information
       return res.status(200).json({
         success: true,
         message: "Hint unlocked successfully",
         data: { nextQuestion },
       });
     } else {
+      // Send response indicating user is not eligible to unlock the hint
       return res.status(200).json({
         success: false,
         message: "User not eligible to unlock the hint for this question",
@@ -84,6 +87,7 @@ const unlockHint = async (req, res) => {
       });
     }
   } catch (error) {
+    // Handle internal server error
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
