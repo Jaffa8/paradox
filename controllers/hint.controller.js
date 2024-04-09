@@ -4,8 +4,7 @@ const UserModel = require("../models/paradoxUser.model.js");
 const unlockHint = async (req, res) => {
   try {
     const { uid, id } = req.body;
-    console.log("UID:", uid); // Print the value of uid
-    console.log("ID:", id);   // Print the value of id
+    
     // Find the user by UID`+-------------------------------------------------------------------------------------------------------------
    
     const currUser = await UserModel.findOne({ uid });
@@ -15,7 +14,7 @@ const unlockHint = async (req, res) => {
    
   
     // Find the question by its ID
-    const ques = await QuestionModel.findOne({ id: id });
+    const ques = await QuestionModel.findOne({ id });
     if (!ques) {
       return res.status(404).json({ success: false, message: "Question not found" });
     }

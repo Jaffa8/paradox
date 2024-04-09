@@ -3,7 +3,7 @@ const Question = require("../models/question.model");
 
 const router = Router();
 
-router.get("/form", async (req, res) => {
+router.get("/getquestions", async (req, res) => {
   try {
     const questions = await Question.find({});
     console.log(questions);
@@ -14,32 +14,32 @@ router.get("/form", async (req, res) => {
   }
 });
 
-const submitQuestion = async (req, res, model) => {
-  try {
-    const { questionNo, question, image, answer,hint } = req.body;
+// const submitQuestion = async (req, res, model) => {
+//   try {
+//     const { questionNo, question, image, answer,hint } = req.body;
 
-    console.log(questionNo, question, image, answer,hint);
+//     console.log(questionNo, question, image, answer,hint);
 
-    const newQues = new model({
-      question: question,
-      id: questionNo,
-      image: image,
-      answer: answer,
-      hint: hint
-    });
+//     const newQues = new model({
+//       question: question,
+//       id: questionNo,
+//       image: image,
+//       answer: answer,
+//       hint: hint
+//     });
 
-    await newQues.save();
+//     await newQues.save();
 
-    return res.status(200).json({
-      message: "submitted",
-    });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+//     return res.status(200).json({
+//       message: "submitted",
+//     });
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// };
 
-router.post("/submit", async (req, res) => {
-  await submitQuestion(req, res, Question);
-});
+// router.post("/submit", async (req, res) => {
+//   await submitQuestion(req, res, Question);
+// });
 
 module.exports = router;

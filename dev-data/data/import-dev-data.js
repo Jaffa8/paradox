@@ -1,59 +1,54 @@
 // Run this command on terminal for importing the data
 // node dev-data/data/import-dev-data.js --import
 
-const fs = require(`fs`);
-const mongoose = require(`mongoose`);
-const dotenv = require(`dotenv`);
-dotenv.config({ path: `./../../config.env` });
-const Parking = require(`./../../models/parkingModel`);
-const User = require(`./../../models/userModel`);
-const Review = require(`./../../models/reviewModel`);
-const DB = process.env.DATABASE.replace(
-  `<PASSWORD>`,
-  process.env.DATABASE_PASSWORD
+const fs = require('fs');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env' });
+
+const Question = require('../../models/question.model');
+
+
+
+const DB = process.env.MONGODB_URI.replace(
+  '<PASSWORD>',
+  process.env.MONGODB_URI
 );
-mongoose.connect(DB).then(() => {
-  console.log(`Connected to DB`);
+mongoose.connect(DB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to DB');
 });
 
-const parkings = JSON.parse(
-  fs.readFileSync(`${__dirname}/parkings.json`, `utf-8`)
-);
-const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, `utf-8`));
-const reviews = JSON.parse(
-  fs.readFileSync(
-    `${__dirname}/reviewvs
-  s.json`,
-    `utf-8`
-  )
-);
+// Read questions data from JSON file
+const questions = JSON.parse(fs.readFileSync(`${__dirname}/questions.json`, 'utf-8'));
 
+// Function to import data
 const importData = async () => {
   try {
-    await Parking.create(parkings);
-    await User.create(users, { validateBeforeSave: false });
-    await Review.create(reviews);
-    console.log(`Data successfully loaded`);
+    await Question.create(questions);
+    console.log('Questions successfully loaded');
   } catch (err) {
     console.log(err.message);
   }
   process.exit();
 };
 
+// Function to delete data
 const deleteData = async () => {
   try {
-    await Parking.deleteMany();
-    await User.deleteMany();
-    await Review.deleteMany();
-    console.log(`Data successfully deleted`);
+    await Question.deleteMany();
+    console.log('Questions successfully deleted');
   } catch (err) {
     console.log(err.message);
   }
   process.exit();
 };
 
-if (process.argv[2] === `--import`) {
+// Check command line argument and execute import or delete accordingly
+if (process.argv[2] === '--import') {
   importData();
-} else if (process.argv[2] === `--delete`) {
+} else if (process.argv[2] === '--delete') {
   deleteData();
 }
