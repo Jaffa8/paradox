@@ -75,7 +75,14 @@ const checkAnswer = async (req, res) => {
       return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
     }
 
-    const isAnswerCorrect = ques.answer.toLowerCase().replace(" ", "") === answer.toLowerCase();
+    // Log the correct answer and the user's answer
+    console.log("Correct Answer:", ques.answer);
+    console.log("User's Answer:", answer);
+
+    const normalizedCorrectAnswer = ques.answer.toLowerCase().trim().replace(/\s+/g, '');
+    const normalizedUserAnswer = answer.toLowerCase().trim().replace(/\s+/g, '');
+
+    const isAnswerCorrect = normalizedCorrectAnswer === normalizedUserAnswer;
     let scoreToAdd = 0;
 
     if (isAnswerCorrect) {
@@ -134,5 +141,6 @@ const checkAnswer = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 module.exports = { checkQuestion, checkAnswer };
