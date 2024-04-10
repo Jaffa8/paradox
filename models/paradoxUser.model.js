@@ -11,13 +11,15 @@ const ParadoxUserSchema = new mongoose.Schema({
   role: String,
   image: String,
  
-  score: Number,
+  score: {
+    type:Number,
+    default:0,
+  },
   isInTeam: Boolean,
   level: Number,
   attempts: Number,
   currQues:{
  type:Number,
- $inc : {'currQues' : 1}
   }, 
   refCode: String,
   teamCode: String,

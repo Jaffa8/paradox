@@ -11,6 +11,7 @@ const getLevelForTime = () => {
 
 const checkQuestion = async (req, res) => {
   try {
+
     // const currentLevel = getLevelForTime();
     const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
 
@@ -25,8 +26,10 @@ const checkQuestion = async (req, res) => {
       return res.status(200).json({ success: false, message: "User does not exist" });
     }
     console.log(user.currQues);
+    
 
     const ques = await QuestionModel.findOne({ id: user.currQues });
+    console.log(ques);
 
     if (!ques) {
       return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
@@ -54,9 +57,10 @@ const checkQuestion = async (req, res) => {
   }
 };
 
+
+
 const checkAnswer = async (req, res) => {
   try {
-    // const currentLevel = getLevelForTime();
     const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
 
     if (!currentLevel) {
@@ -76,9 +80,8 @@ const checkAnswer = async (req, res) => {
       return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
     }
 
-    const isAnswerCorrect = ques.answer.toLowerCase().replace(" ", "") === answer.toLowerCase();
+    const isAnswerCorrect = ques.answer.toLowerCase() === answer.toLowerCase();
     let scoreToAdd = 0;
-
     if (isAnswerCorrect) {
       scoreToAdd += 10;
 
@@ -88,7 +91,7 @@ const checkAnswer = async (req, res) => {
       if (firstSolver && firstSolver.uid === uid) {
         scoreToAdd += 5;
       }
-     
+
       const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true }) 
         .sort({ lastAnswerTimestamp: 1 })
         .limit(5);
@@ -97,19 +100,16 @@ const checkAnswer = async (req, res) => {
         scoreToAdd += 2;
       }
 
-      if (user.lastAnswerCorrect) {
-        user.consecutiveCorrectAnswers++;
-        scoreToAdd += user.consecutiveCorrectAnswers * 5;
-      } else {
-        user.consecutiveCorrectAnswers = 1;
-      }
-
       user.score += scoreToAdd;
       user.lastAnswerCorrect = true; 
       await user.save();
 
       ques.count++;
       await ques.save();
+
+      // Increment user's current question after processing the answer
+      user.currQues++;
+      await user.save();
     } else {
       user.lastAnswerCorrect = false;
       user.consecutiveCorrectAnswers = 0;
@@ -130,8 +130,11 @@ const checkAnswer = async (req, res) => {
       } : null
     };
 
+    console.log(ques.answer.toLowerCase());
+    console.log(answer.toLowerCase());
     return res.status(200).json({ success: true, message: isAnswerCorrect ? "Answer is correct" : "Answer is not correct", data: responseData });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

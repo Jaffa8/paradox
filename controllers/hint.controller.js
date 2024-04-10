@@ -20,7 +20,7 @@ const unlockHint = async (req, res) => {
     } 
 
     // Check if the user has enough points to unlock the hint
-    const hintUnlockCost = 30; // 30 points deducted per hint
+    const hintUnlockCost = 5; // 30 points deducted per hint
     if (currUser.score < hintUnlockCost) {
       return res.status(200).json({
         success: false,
@@ -38,11 +38,11 @@ const unlockHint = async (req, res) => {
     }
 
     // Check if the user is eligible to unlock the hint based on time spent
-    const timeSpentThreshold = 180; // hint unlock after 3 minutes only
-    let hintUnlockEligible = false;
-    if (currUser.timeSpent[ques.id] && currUser.timeSpent[ques.id] > timeSpentThreshold) {
-      hintUnlockEligible = true;
-    }
+    // const timeSpentThreshold = 180; // hint unlock after 3 minutes only
+    // let hintUnlockEligible = false;
+    // if (currUser.timeSpent[ques.id] && currUser.timeSpent[ques.id] > timeSpentThreshold) {
+    //   hintUnlockEligible = true;
+    // }
 
     // Handle hint unlocking
     if (hintUnlockEligible) {

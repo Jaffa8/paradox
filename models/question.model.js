@@ -7,6 +7,9 @@ const questionSchema=new mongoose.Schema({
     id: {
        type: Number,
     },
+    question_id:{
+        type: Number,
+    },
     answer:{
      type:String,
      lowercase:true,   
@@ -29,6 +32,7 @@ const questionSchema=new mongoose.Schema({
     },
     count:{
         type:Number,
+        default: 0,
     } 
 
 },{timestamps:true});
