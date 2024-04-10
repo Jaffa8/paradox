@@ -24,6 +24,7 @@ const checkQuestion = async (req, res) => {
     if (!user) {
       return res.status(200).json({ success: false, message: "User does not exist" });
     }
+    console.log(user.currQues);
 
     const ques = await QuestionModel.findOne({ id: user.currQues });
 
