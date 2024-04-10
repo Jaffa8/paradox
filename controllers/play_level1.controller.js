@@ -129,7 +129,7 @@ const checkAnswer = async (req, res) => {
       } : null
     };
 
-    return res.status(200).json({ success: true, message: isAnswerCorrect ? "Answer is correct" : "Answer is incorrect", data: responseData });
+    return res.status(200).json({ success: true, message: isAnswerCorrect ? "Answer is correct" : "Answer is not correct", data: responseData });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
