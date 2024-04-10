@@ -17,7 +17,7 @@ const unlockHint = async (req, res) => {
     const ques = await QuestionModel.findOne({ id });
     if (!ques) {
       return res.status(404).json({ success: false, message: "Question not found" });
-    }
+    } 
 
     // Check if the user has enough points to unlock the hint
     const hintUnlockCost = 30; // 30 points deducted per hint
