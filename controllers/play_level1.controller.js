@@ -1,27 +1,18 @@
 const ParadoxUserModel = require("../models/paradoxUser.model.js");
 const QuestionModel = require("../models/question.model.js");
 
-const levels = {
-  level1: {
-    start: 1681533000000,
-    end: 1681583400000
-  },
-  
-};
-
-const getLevelForTime = (currTime) => {
-  for (const level in levels) {
-    if (currTime >= levels[level].start && currTime <= levels[level].end) {
-      return level;
-    }
-  }
-  return null;
+const getLevelForTime = () => {
+  // Here, you can implement your own logic for determining the current level based on the time if needed.
+  // For testing purposes, you can directly return a specific level or leave it as it is.
+  // For example:
+  // return 'level1';
+  return null; // This will indicate that there's no active level for testing purposes.
 };
 
 const checkQuestion = async (req, res) => {
   try {
-    const currTime = Date.now();
-    const currentLevel = getLevelForTime(currTime);
+    // const currentLevel = getLevelForTime();
+    const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
 
     if (!currentLevel) {
       return res.status(200).json({ success: false, message: "No active level" });
@@ -61,10 +52,11 @@ const checkQuestion = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 const checkAnswer = async (req, res) => {
   try {
-    const currTime = Date.now();
-    const currentLevel = getLevelForTime(currTime);
+    // const currentLevel = getLevelForTime();
+    const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
 
     if (!currentLevel) {
       return res.status(200).json({ success: false, message: "No active level" });
@@ -87,14 +79,13 @@ const checkAnswer = async (req, res) => {
     let scoreToAdd = 0;
 
     if (isAnswerCorrect) {
-      
       scoreToAdd += 10;
 
       const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
         .sort({ lastAnswerTimestamp: 1 });
 
       if (firstSolver && firstSolver.uid === uid) {
-        scoreToAdd += 5;       // first solver will get 5 extra points
+        scoreToAdd += 5;
       }
      
       const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true }) 
@@ -102,27 +93,23 @@ const checkAnswer = async (req, res) => {
         .limit(5);
 
       if (firstFiveCorrect.some(u => u.uid === uid)) {
-        scoreToAdd += 2;                    // first 5 solver will get 5 more points per question
+        scoreToAdd += 2;
       }
 
-     
       if (user.lastAnswerCorrect) {
         user.consecutiveCorrectAnswers++;
-        scoreToAdd += user.consecutiveCorrectAnswers * 5; // for every consecutive right answer 5 more points
+        scoreToAdd += user.consecutiveCorrectAnswers * 5;
       } else {
-        user.consecutiveCorrectAnswers = 1;   // else streak =1
+        user.consecutiveCorrectAnswers = 1;
       }
 
-      
       user.score += scoreToAdd;
       user.lastAnswerCorrect = true; 
       await user.save();
 
-      
       ques.count++;
       await ques.save();
     } else {
-      
       user.lastAnswerCorrect = false;
       user.consecutiveCorrectAnswers = 0;
       await user.save();
@@ -147,7 +134,5 @@ const checkAnswer = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-
-
 
 module.exports = { checkQuestion, checkAnswer };
