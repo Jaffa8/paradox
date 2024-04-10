@@ -3,7 +3,7 @@ const Question = require("../models/question.model");
 
 const router = Router();
 
-router.get("/getquestions", async (req, res) => {
+router.get("/form", async (req, res) => {
   try {
     const questions = await Question.find({});
     console.log(questions);
