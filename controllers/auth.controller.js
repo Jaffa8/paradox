@@ -63,8 +63,12 @@ const login_post = async (req, res) => {
             throw error;
         }
 
-        // Successful login
-        return res.status(200).json({ message: "User logged in successfully", user });
+        // Generate JWT token for the logged-in user
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" }); // Replace 'your_secret_key_here' with your actual secret key
+        console.log("JWT Token:", token);
+
+        // Successful login with JWT token included in the response
+        return res.status(200).json({ message: "User logged in successfully", user, token });
     } catch (error) {
         console.error("Error in login_post:", error);
         return res.status(error.status || 500).json({ message: error.message });

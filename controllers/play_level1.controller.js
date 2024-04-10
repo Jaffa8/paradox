@@ -112,7 +112,7 @@ const checkAnswer = async (req, res) => {
       await user.save();
     } else {
       user.lastAnswerCorrect = false;
-      user.consecutiveCorrectAnswers = 0;
+      
       await user.save();
     }
 
