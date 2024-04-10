@@ -1,5 +1,6 @@
 node_modules
 .env
 yarn.lock
-dev-data/questions.json
+dev-data/*.json
+
 
