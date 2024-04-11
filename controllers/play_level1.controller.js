@@ -9,7 +9,7 @@ const QuestionModel = require("../models/question.model.js");
     const currentHour = currentDate.getHours();
   
     
-    if (currentHour >= 0 && currentHour < 18) {
+    if (currentHour >= 1 && currentHour < 18) {
       
       return 'activeLevel';
     } else {
@@ -24,7 +24,7 @@ const QuestionModel = require("../models/question.model.js");
 const checkQuestion = async (req, res) => {
   try {
     const currentLevel = getLevelForTime();
-    
+    console.log(currentLevel)
 
     if (!currentLevel) {
       return res
