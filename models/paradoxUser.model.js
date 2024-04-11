@@ -30,7 +30,10 @@ const ParadoxUserSchema = new mongoose.Schema({
   nextQuestionNumber: Number,
   roll: String,
   coins: String,
-  rank: Number,
+  rank: {
+    type:Number,
+    default:0
+  },
 
 lastAnswerTimestamp: {
   type: Date,

@@ -10,6 +10,9 @@ const displayProfile= async(req,res)=>{
       message:"User not found",success:false
      })
     }
+    const userPosition = await ParadoxUser.countDocuments({ score: { $gte: user.score } });
+
+   
     const userObject={
       name: user.name,
       uid: user.uid,
@@ -22,8 +25,9 @@ const displayProfile= async(req,res)=>{
       coins: user.coins,
       attempts: user.currQues - 1,
       score: user.score,
-      rank: user.rank,
+      userPosition,
     };
+    
     res.json({message:"User found",success:true,data:userObject});
   }
   catch(error){
