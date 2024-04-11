@@ -6,7 +6,6 @@ const bcrypt=require("bcrypt");
 
 
     
-
 const signup_post = async (req, res) => {
     try {
         const { email, password } = req.body;
