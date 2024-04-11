@@ -49,7 +49,7 @@ const unlockHint = async (req, res) => {
       hint: ques.hint,
       image: ques.image,
       isHintAvailable: ques.isHintAvailable,
-      hint:currUser.score,
+      score:currUser.score,
     };
 
     // Send success response with unlocked hint information
