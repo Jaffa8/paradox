@@ -1,18 +1,30 @@
 const ParadoxUserModel = require("../models/paradoxUser.model.js");
 const QuestionModel = require("../models/question.model.js");
 
-const getLevelForTime = () => {
-  // Here, you can implement your own logic for determining the current level based on the time if needed.
-  // For testing purposes, you can directly return a specific level or leave it as it is.
-  // For example:
-  // return 'level1';
-  return null; // This will indicate that there's no active level for testing purposes.
-};
+
+  const getLevelForTime = () => {
+    
+    const currentDate = new Date();
+    
+    const currentHour = currentDate.getHours();
+  
+    
+    if (currentHour >= 0 && currentHour < 18) {
+      
+      return 'activeLevel';
+    } else {
+      
+      return null;
+    }
+   
+  };
+  
+ 
 
 const checkQuestion = async (req, res) => {
   try {
-    // const currentLevel = getLevelForTime();
-    const currentLevel = "level1"; // For testing purposes, assuming a specific level.
+    const currentLevel = getLevelForTime();
+    
 
     if (!currentLevel) {
       return res
@@ -72,7 +84,7 @@ const checkQuestion = async (req, res) => {
 
 const checkAnswer = async (req, res) => {
   try {
-    const currentLevel = "level1"; // For testing purposes, assuming a specific level.
+    const currentLevel = getLevelForTime();
 
     if (!currentLevel) {
       return res
@@ -113,29 +125,15 @@ const checkAnswer = async (req, res) => {
         scoreToAdd += 2;
       }
 
-      // const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
-      //   .sort({ lastAnswerTimestamp: 1 });
-
-      // if (firstSolver && firstSolver.uid === uid) {
-      //   scoreToAdd += 5;
-      // }
-
-      // const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true })
-      //   .sort({ lastAnswerTimestamp: 1 })
-      //   .limit(5);
-
-      // if (firstFiveCorrect.some(u => u.uid === uid)) {
-      //   scoreToAdd += 2;
-      // }
-
+    
       user.score += scoreToAdd;
       user.lastAnswerCorrect = true;
       await user.save();
 
-      // ques.count++;
+      
       await ques.save();
 
-      // Increment user's current question after processing the answer
+      
       user.currQues++;
       await user.save();
     } else {
