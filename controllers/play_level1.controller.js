@@ -111,22 +111,6 @@ const checkAnswer = async (req, res) => {
       } else if (ques.count > 1 && ques.count <= 5) {
         scoreToAdd += 2;
       }
-      console.log(scoreToAdd);
-
-      // const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
-      //   .sort({ lastAnswerTimestamp: 1 });
-
-      // if (firstSolver && firstSolver.uid === uid) {
-      //   scoreToAdd += 5;
-      // }
-
-      // const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true })
-      //   .sort({ lastAnswerTimestamp: 1 })
-      //   .limit(5);
-
-      // if (firstFiveCorrect.some(u => u.uid === uid)) {
-      //   scoreToAdd += 2;
-      // }
 
       // const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
       //   .sort({ lastAnswerTimestamp: 1 });
@@ -166,21 +150,12 @@ const checkAnswer = async (req, res) => {
       isLevelComplete: !nextQues,
       nextQuestion: nextQues
         ? {
-<<<<<<< HEAD
             questionNo: nextQues.id,
             _id: nextQues._id,
             question: nextQues.question,
             image: nextQues.image,
             isHintAvailable: nextQues.isHintAvailable,
           }
-=======
-          questionNo: nextQues.id,
-          _id: nextQues._id,
-          question: nextQues.question,
-          image: nextQues.image,
-          isHintAvailable: nextQues.isHintAvailable,
-        }
->>>>>>> 21856b20a520d6023279f94964bfbca720c6ad4e
         : null,
     };
 
