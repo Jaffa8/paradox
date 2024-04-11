@@ -2,22 +2,20 @@ const ParadoxUserModel = require("../models/paradoxUser.model.js");
 const QuestionModel = require("../models/question.model.js");
 
 const getLevelForTime = () => {
-  const currentDate = new Date();
-  
-  // Get the current hour in UTC
-  const currentHourUTC = currentDate.getUTCHours();
+  const currentHour = new Date().getHours();
 
-  if (currentHourUTC >= 0 && currentHourUTC < 18) {
+  if (currentHour >= 0 && currentHour < 18) {
     return 'activeLevel';
   } else {
     return null;
   }
 };
 
+
 const checkQuestion = async (req, res) => {
   try {
     const currentLevel = getLevelForTime();
-    console.log(currentLevel)
+    console.log(currentLevel);
 
     if (!currentLevel) {
       return res
