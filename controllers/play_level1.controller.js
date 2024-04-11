@@ -9,7 +9,7 @@ const QuestionModel = require("../models/question.model.js");
     const currentHour = currentDate.getHours();
   
     
-    if (currentHour >= 1 && currentHour < 18) {
+    if (currentHour >= 0 && currentHour < 18) {
       
       return 'activeLevel';
     } else {
