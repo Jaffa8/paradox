@@ -31,7 +31,17 @@ const ParadoxUserSchema = new mongoose.Schema({
   roll: String,
   coins: String,
   rank: String,
+
+lastAnswerTimestamp: {
+  type: Date,
+  default: Date.now
 },
-{timestamps:true});
+lastAnswerCorrect: {
+  type: Boolean,
+  default: false
+},
+},
+{timestamps:true}
+);
 
 module.exports = mongoose.model("paradoxUser", ParadoxUserSchema);

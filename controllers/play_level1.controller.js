@@ -11,28 +11,36 @@ const getLevelForTime = () => {
 
 const checkQuestion = async (req, res) => {
   try {
-
     // const currentLevel = getLevelForTime();
-    const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
+    const currentLevel = "level1"; // For testing purposes, assuming a specific level.
 
     if (!currentLevel) {
-      return res.status(200).json({ success: false, message: "No active level" });
+      return res
+        .status(200)
+        .json({ success: false, message: "No active level" });
     }
 
     const { uid } = req.body;
     const user = await ParadoxUserModel.findOne({ uid });
 
     if (!user) {
-      return res.status(200).json({ success: false, message: "User does not exist" });
+      return res
+        .status(200)
+        .json({ success: false, message: "User does not exist" });
     }
     console.log(user.currQues);
-    
 
     const ques = await QuestionModel.findOne({ id: user.currQues });
     console.log(ques);
 
     if (!ques) {
-      return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Level Finished",
+          data: { isAnswerCorrect: false, isLevelComplete: true },
+        });
     }
 
     const responseData = {
@@ -43,68 +51,87 @@ const checkQuestion = async (req, res) => {
         _id: ques._id,
         question: ques.question,
         image: ques.image,
-        isHintAvailable: ques.isHintAvailable
-      }
+        isHintAvailable: ques.isHintAvailable,
+      },
     };
 
     if (user.unlockedHints.includes(user.currQues)) {
       responseData.nextQuestion.hint = ques.hint;
     }
 
-    return res.status(200).json({ success: true, message: "Question found", data: responseData });
+    return res
+      .status(200)
+      .json({ success: true, message: "Question found", data: responseData });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
-
-
 const checkAnswer = async (req, res) => {
   try {
-    const currentLevel = 'level1'; // For testing purposes, assuming a specific level.
+    const currentLevel = "level1"; // For testing purposes, assuming a specific level.
 
     if (!currentLevel) {
-      return res.status(200).json({ success: false, message: "No active level" });
+      return res
+        .status(200)
+        .json({ success: false, message: "No active level" });
     }
 
     const { answer, uid } = req.body;
     const user = await ParadoxUserModel.findOne({ uid });
 
     if (!user) {
-      return res.status(200).json({ success: false, message: "User does not exist" });
+      return res
+        .status(200)
+        .json({ success: false, message: "User does not exist" });
     }
 
     const ques = await QuestionModel.findOne({ id: user.currQues });
 
     if (!ques) {
-      return res.status(200).json({ success: true, message: "Level Finished", data: { isAnswerCorrect: false, isLevelComplete: true } });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Level Finished",
+          data: { isAnswerCorrect: false, isLevelComplete: true },
+        });
     }
 
     const isAnswerCorrect = ques.answer.toLowerCase() === answer.toLowerCase();
     let scoreToAdd = 0;
     if (isAnswerCorrect) {
       scoreToAdd += 10;
+      ques.count++;
 
-      const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
-        .sort({ lastAnswerTimestamp: 1 });
-
-      if (firstSolver && firstSolver.uid === uid) {
+      if (ques.count == 1) {
         scoreToAdd += 5;
-      }
-
-      const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true }) 
-        .sort({ lastAnswerTimestamp: 1 })
-        .limit(5);
-
-      if (firstFiveCorrect.some(u => u.uid === uid)) {
+      } else if (ques.count > 1 && ques.count <= 5) {
         scoreToAdd += 2;
       }
 
+      // const firstSolver = await ParadoxUserModel.findOne({ lastAnswerCorrect: true })
+      //   .sort({ lastAnswerTimestamp: 1 });
+
+      // if (firstSolver && firstSolver.uid === uid) {
+      //   scoreToAdd += 5;
+      // }
+
+      // const firstFiveCorrect = await ParadoxUserModel.find({ lastAnswerCorrect: true })
+      //   .sort({ lastAnswerTimestamp: 1 })
+      //   .limit(5);
+
+      // if (firstFiveCorrect.some(u => u.uid === uid)) {
+      //   scoreToAdd += 2;
+      // }
+
       user.score += scoreToAdd;
-      user.lastAnswerCorrect = true; 
+      user.lastAnswerCorrect = true;
       await user.save();
 
-      ques.count++;
+      // ques.count++;
       await ques.save();
 
       // Increment user's current question after processing the answer
@@ -112,7 +139,7 @@ const checkAnswer = async (req, res) => {
       await user.save();
     } else {
       user.lastAnswerCorrect = false;
-      
+
       await user.save();
     }
 
@@ -121,21 +148,33 @@ const checkAnswer = async (req, res) => {
     const responseData = {
       isAnswerCorrect,
       isLevelComplete: !nextQues,
-      nextQuestion: nextQues ? {
-        questionNo: nextQues.id,
-        _id: nextQues._id,
-        question: nextQues.question,
-        image: nextQues.image,
-        isHintAvailable: nextQues.isHintAvailable
-      } : null
+      nextQuestion: nextQues
+        ? {
+            questionNo: nextQues.id,
+            _id: nextQues._id,
+            question: nextQues.question,
+            image: nextQues.image,
+            isHintAvailable: nextQues.isHintAvailable,
+          }
+        : null,
     };
 
     console.log(ques.answer.toLowerCase());
     console.log(answer.toLowerCase());
-    return res.status(200).json({ success: true, message: isAnswerCorrect ? "Answer is correct" : "Answer is not correct", data: responseData });
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: isAnswerCorrect
+          ? "Answer is correct"
+          : "Answer is not correct",
+        data: responseData,
+      });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
