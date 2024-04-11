@@ -4,12 +4,14 @@ const QuestionModel = require("../models/question.model.js");
 const getLevelForTime = () => {
   const currentHour = new Date().getHours();
 
+  
   if (currentHour >= 0 && currentHour < 18) {
     return 'activeLevel';
   } else {
     return null;
   }
 };
+
 
 
 const checkQuestion = async (req, res) => {
