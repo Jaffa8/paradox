@@ -2,22 +2,13 @@ const ParadoxUserModel = require("../models/paradoxUser.model.js");
 const QuestionModel = require("../models/question.model.js");
 
 const getLevelForTime = () => {
-  const currentHour = new Date().getHours();
-
-  
-  if (currentHour >= 0 && currentHour < 18) {
-    return 'activeLevel';
-  } else {
-    return null;
-  }
+  // Hardcoded to always return 'activeLevel' for testing purposes
+  return 'activeLevel';
 };
-
-
 
 const checkQuestion = async (req, res) => {
   try {
     const currentLevel = getLevelForTime();
-    console.log(currentLevel);
 
     if (!currentLevel) {
       return res
@@ -33,10 +24,8 @@ const checkQuestion = async (req, res) => {
         .status(200)
         .json({ success: false, message: "User does not exist" });
     }
-    console.log(user.currQues);
 
     const ques = await QuestionModel.findOne({ id: user.currQues });
-    console.log(ques);
 
     if (!ques) {
       return res
@@ -57,7 +46,7 @@ const checkQuestion = async (req, res) => {
         question: ques.question,
         image: ques.image,
         isHintAvailable: ques.isHintAvailable,
-        score:user.score,
+        score: user.score,
       },
     };
 
@@ -144,7 +133,7 @@ const checkAnswer = async (req, res) => {
             question: nextQues.question,
             image: nextQues.image,
             isHintAvailable: nextQues.isHintAvailable,
-            score:user.score,
+            score: user.score,
           }
         : null,
     };
