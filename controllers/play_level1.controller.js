@@ -52,6 +52,7 @@ const checkQuestion = async (req, res) => {
         question: ques.question,
         image: ques.image,
         isHintAvailable: ques.isHintAvailable,
+        score:user.score,
       },
     };
 
@@ -155,6 +156,7 @@ const checkAnswer = async (req, res) => {
             question: nextQues.question,
             image: nextQues.image,
             isHintAvailable: nextQues.isHintAvailable,
+            score:user.score,
           }
         : null,
     };
