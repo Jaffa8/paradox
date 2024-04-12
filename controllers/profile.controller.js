@@ -25,7 +25,7 @@ const displayProfile= async(req,res)=>{
       coins: user.coins,
       attempts: user.currQues - 1,
       score: user.score,
-      userPosition,
+      rank:userPosition,
     };
     
     res.json({message:"User found",success:true,data:userObject});
