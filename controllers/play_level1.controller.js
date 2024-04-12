@@ -10,7 +10,7 @@ const getLevelForTime = () => {
   const currentHourUTC = currentHour - currentTime.getTimezoneOffset() / 60;
     console.log(currentHourUTC);
   
-  if (currentHourUTC >= 4 && currentHourUTC < 12) {
+  if (currentHourUTC >= 4 && currentHourUTC < 14) {
     return 'activeLevel';
   } else {
     return null;
