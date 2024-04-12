@@ -5,7 +5,7 @@ const getLevelForTime = () => {
   const currentTime = new Date();
   const currentHour = currentTime.getUTCHours(); // Get current hour in UTC
     
-  if (currentHour >= 4 && currentHour < 17) { // Check if current hour is between 8 am and 5 pm (UTC)
+  if (currentHour >= 2 && currentHour < 17) { // Check if current hour is between 8 am and 5 pm (UTC)
     return 'activeLevel';
   } else {
     return null;
