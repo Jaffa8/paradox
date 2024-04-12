@@ -2,15 +2,35 @@ const ParadoxUserModel = require("../models/paradoxUser.model.js");
 const QuestionModel = require("../models/question.model.js");
 
 const getLevelForTime = () => {
-  // Hardcoded to always return 'activeLevel' for testing purposes
-  return 'activeLevel';
+ 
+  const currentTime = new Date();
+  const currentHour = currentTime.getHours();
+      console.log(currentHour);
+  
+  const currentHourUTC = currentHour - currentTime.getTimezoneOffset() / 60;
+    console.log(currentHourUTC);
+  
+  if (currentHourUTC >= 4 && currentHourUTC < 12) {
+    return 'activeLevel';
+  } else {
+    return null;
+  }
 };
+
+
+console.log(getLevelForTime()); 
+
+
+
+
+
+
 
 const checkQuestion = async (req, res) => {
   try {
     const currentLevel = getLevelForTime();
-
-    if (!currentLevel) {
+    console.log(currentLevel); 
+    if (currentLevel==null) {
       return res
         .status(200)
         .json({ success: false, message: "No active level" });
@@ -68,7 +88,7 @@ const checkAnswer = async (req, res) => {
   try {
     const currentLevel = getLevelForTime();
 
-    if (!currentLevel) {
+    if (currentLevel==null) {
       return res
         .status(200)
         .json({ success: false, message: "No active level" });
