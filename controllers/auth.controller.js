@@ -29,7 +29,7 @@ const signup_post = async (req, res) => {
         }
 
         // Generate JWT token for the newly created user
-        signupToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        signupToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "48h" });
         console.log("JWT Token (Signup):", signupToken);
 
         // Return the token along with the message
